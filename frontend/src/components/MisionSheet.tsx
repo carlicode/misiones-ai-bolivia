@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Camera } from 'lucide-react'
+import { Camera, Images } from 'lucide-react'
 import type { Mission } from '../lib/missions'
 import type { MisionEnviada, Participante } from '../lib/api'
 import { api } from '../lib/api'
@@ -95,10 +95,14 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
         <div className="field">
           <label>{mision.photoLabel}</label>
           <div className="foto-picker">
+            {/*
+              Sin el atributo `capture`: con el, el celular abre la camara
+              directo y no deja llegar al carrete. Varias misiones piden un
+              screenshot que ya esta guardado en la galeria.
+            */}
             <input
               type="file"
               accept="image/*"
-              capture="environment"
               onChange={elegirArchivo}
               aria-label={mision.photoLabel}
             />
@@ -109,8 +113,11 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
               </>
             ) : (
               <span className="vacio">
-                <Camera size={28} strokeWidth={1.5} />
-                <span>Toca para tomar o elegir una foto</span>
+                <span className="vacio-iconos" aria-hidden="true">
+                  <Camera size={26} strokeWidth={1.5} />
+                  <Images size={26} strokeWidth={1.5} />
+                </span>
+                <span>Toma una foto o elígela de tu galería</span>
               </span>
             )}
           </div>

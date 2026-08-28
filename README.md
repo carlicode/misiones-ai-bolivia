@@ -96,6 +96,29 @@ node scripts/generar-qr.mjs https://la-url-que-sea
 
 ---
 
+## Cómo se hizo esta app
+
+La app tiene una sección **«Cómo se hizo esta app»** visible para quien
+participa: los siete servicios de AWS que la mueven, y qué resolvió cada uno
+aquí en concreto. Al ser un evento de comunidad, la app misma es material
+didáctico.
+
+| Servicio | Para qué sirvió |
+|---|---|
+| **Amazon CloudFront** | Sirve la app. El bucket es privado y guarda copias cerca de Bolivia. |
+| **Amazon S3** | Fotos de las evidencias. El celular sube directo con URL prefirmada. |
+| **Amazon API Gateway** | Puerta de entrada de las peticiones, sin servidor encendido. |
+| **AWS Lambda** | Toda la lógica: registro, misiones, moderación y sorteo. |
+| **Amazon DynamoDB** | Participantes, misiones y el sorteo. Índice por celular para recuperar progreso. |
+| **AWS CloudFormation** | La infraestructura entera como código, no hecha a mano en la consola. |
+| **Amazon CloudWatch** | Métricas. Reveló el límite de concurrencia que motivó los reintentos. |
+
+Los íconos en [`frontend/public/aws/`](frontend/public/aws) son los oficiales
+del [paquete de AWS Architecture Icons](https://aws.amazon.com/architecture/icons/)
+(edición de julio 2026), que AWS permite usar en materiales de este tipo.
+
+---
+
 ## Arquitectura
 
 ```

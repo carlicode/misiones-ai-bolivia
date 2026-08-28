@@ -7,6 +7,7 @@ import Progreso from './components/Progreso'
 import MisionCard from './components/MisionCard'
 import MisionSheet from './components/MisionSheet'
 import Lineamientos from './components/Lineamientos'
+import ComoSeHizo from './components/ComoSeHizo'
 import Contador from './components/Contador'
 import Premio from './components/Premio'
 import Confeti from './components/Confeti'
@@ -98,6 +99,7 @@ export default function App() {
               </p>
             </header>
             {!cerrado && <RegistroForm onRegistrado={alRegistrarse} />}
+            <ComoSeHizo />
           </>
         ) : (
           <>
@@ -157,6 +159,7 @@ export default function App() {
             </div>
 
             <Lineamientos />
+            <ComoSeHizo />
 
             <footer className="pie">
               <span>Debes estar presente para recibir tu premio.</span>

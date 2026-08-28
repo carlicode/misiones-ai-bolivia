@@ -672,3 +672,67 @@ h1, h2, h3 { text-wrap: balance; letter-spacing: -.02em; }
   line-height: 1.5;
 }
 .topbar .clock.urgente { color: var(--warn); }
+.vacio-iconos { display: flex; gap: 14px; align-items: center; }
+
+/* ---------- cómo se hizo ---------- */
+.como {
+  margin-top: 34px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+.como-head h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 7px; }
+.como-head p {
+  font-size: .85rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.stack { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.stack li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  transition: border-color .15s ease;
+}
+.stack li.on { border-color: var(--border-hi); }
+
+.stack button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+}
+.stack img { flex: 0 0 auto; border-radius: 6px; }
+.stack-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.stack-nombre { font-size: .88rem; font-weight: 600; }
+.stack-para { font-size: .78rem; color: var(--text-dim); line-height: 1.4; }
+.stack-chev { color: var(--text-faint); flex: 0 0 auto; transition: transform .2s ease; }
+.stack li.on .stack-chev { transform: rotate(180deg); }
+
+.stack-detalle {
+  padding: 0 14px 14px 60px;
+  font-size: .82rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+
+.como-repo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  font-size: .83rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color .15s ease, border-color .15s ease;
+}
+.como-repo:hover { color: var(--accent); border-color: var(--accent); }
