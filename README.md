@@ -1,7 +1,7 @@
 # Misiones AI Bolivia
 
 App del sorteo de 10 impresiones 3D del **AWS User Group AI Bolivia** para el
-AWS Community Day Bolivia 2026.
+**AWS Community Day Bolivia 2026** — sábado 29 de agosto, Santa Cruz de la Sierra.
 
 La gente cumple misiones durante el evento, sube la evidencia desde el celular,
 el staff la aprueba, y al final del día se sortean los premios con una tómbola
@@ -272,12 +272,10 @@ BUCKET_FOTOS=ugai-fotos-prod-<cuenta> node scripts/limpiar-datos-de-prueba.mjs
 
 ## Pendiente
 
-- [ ] Fecha y hora reales del evento en `DEADLINE`
-      ([`frontend/src/lib/missions.ts`](frontend/src/lib/missions.ts)) — hoy
-      tiene un valor de marcador para el contador regresivo
-- [ ] Ensayo general con el equipo antes del día del evento
-      (la guía está en [GUIA-STAFF.md](GUIA-STAFF.md))
-- [ ] Pedir el aumento de cuota de Lambda (ver arriba)
+- [x] Fecha del evento configurada: cierre el **29/08/2026 a las 15:30** (UTC-4)
+- [ ] Que el equipo lea [GUIA-STAFF.md](GUIA-STAFF.md) antes del evento
+- [ ] Pedir el aumento de cuota de Lambda (ver arriba). Con los reintentos la
+      app funciona igual, así que no bloquea nada.
 
 ---
 
