@@ -79,10 +79,27 @@ debajo de la lista de ganadores.
 
 ---
 
+## En producción
+
+| | |
+|---|---|
+| **App** | https://d1jd2g07edoeyf.cloudfront.net |
+| **Panel del staff** | https://d1jd2g07edoeyf.cloudfront.net/staff |
+| **API** | https://90jz4igs4d.execute-api.us-east-1.amazonaws.com |
+
+El cartel con el QR para el stand está en [`cartel/qr-stand.svg`](cartel/qr-stand.svg)
+(A5, listo para imprimir). Para regenerarlo con otra URL:
+
+```bash
+node scripts/generar-qr.mjs https://la-url-que-sea
+```
+
+---
+
 ## Arquitectura
 
 ```
-Amplify Hosting ──> React + Vite (mobile-first)
+CloudFront ──> S3 privado ──> React + Vite (mobile-first)
                          │
                          ▼
                   API Gateway + Lambda (Node, Express)
@@ -152,17 +169,43 @@ en local. La app queda en `localhost:5174` y el panel en `localhost:5174/staff`.
 
 ## Desplegar
 
+### Backend
+
 ```bash
 cd backend
-STAFF_KEY='la-clave-del-equipo' npx serverless deploy --stage prod
+STAFF_KEY='la-clave-del-equipo' \
+CIERRE_ISO='2026-09-20T15:30:00-04:00' \
+npx serverless deploy --stage prod
 ```
 
-Al terminar imprime la URL de la API. Esa URL va como `VITE_API_URL` en las
-variables de entorno de Amplify Hosting, que buildea el frontend con
-[`amplify.yml`](amplify.yml).
+`CIERRE_ISO` es **la hora en que deja de aceptarse participación**, y se aplica
+de verdad: después de esa hora la API rechaza registros y evidencias, mientras
+el staff sigue pudiendo moderar y sortear. Si la dejas vacía, no se cierra nada.
 
 > La `STAFF_KEY` es lo único que protege el panel. No la subas al repo ni la
 > mandes por el grupo general.
+
+### Frontend
+
+```bash
+cd frontend
+npm run build
+aws s3 sync dist/ s3://ugai-web-prod-<cuenta>/ --delete \
+  --exclude index.html --exclude '*.webmanifest' \
+  --cache-control 'public,max-age=31536000,immutable'
+aws s3 cp dist/index.html s3://ugai-web-prod-<cuenta>/index.html \
+  --cache-control 'no-cache,must-revalidate'
+aws cloudfront create-invalidation --distribution-id <id> --paths '/*'
+```
+
+Los assets llevan hash en el nombre, así que van con caché de un año. El
+`index.html` no, para que un deploy nuevo se vea al instante.
+
+La infraestructura del hosting está en [`infra/hosting.yml`](infra/hosting.yml):
+
+```bash
+aws cloudformation deploy --template-file infra/hosting.yml --stack-name ugai-hosting-prod
+```
 
 ---
 

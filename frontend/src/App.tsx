@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { api, type Participante } from './lib/api'
+import { api, type Participante, type ConfigEvento } from './lib/api'
 import { guardarId, leerId, borrarId } from './lib/storage'
 import { MISSIONS, PREMIOS, WHATSAPP_URL, REQUIRED_IDS, type MissionId } from './lib/missions'
 import RegistroForm from './components/RegistroForm'
@@ -21,6 +21,7 @@ export default function App() {
   const [toast, setToast] = useState<ToastState>(null)
   const [stats, setStats] = useState<{ participantes: number } | null>(null)
   const [confeti, setConfeti] = useState(false)
+  const [config, setConfig] = useState<ConfigEvento | null>(null)
 
   useEffect(() => {
     const id = leerId()
@@ -34,7 +35,12 @@ export default function App() {
 
   useEffect(() => {
     let activo = true
-    function cargar() { api.stats().then((s) => { if (activo) setStats(s) }).catch(() => {}) }
+    function cargar() {
+      api.stats().then((s) => { if (activo) setStats(s) }).catch(() => {})
+      // Se relee junto con las stats para que el cierre entre en efecto
+      // sin que nadie tenga que recargar la página.
+      api.config().then((c) => { if (activo) setConfig(c) }).catch(() => {})
+    }
     cargar()
     const id = setInterval(cargar, 30_000)
     return () => { activo = false; clearInterval(id) }
@@ -58,6 +64,7 @@ export default function App() {
     })
   }
 
+  const cerrado = config?.cerrado ?? false
   const misionActiva = MISSIONS.find((m) => m.id === misionAbierta)
   const envioActivo = participante?.misiones.find((m) => m.missionId === misionAbierta)
 
@@ -67,10 +74,17 @@ export default function App() {
     <>
       <div className="topbar">
         <span className="word"><b>AWS UG AI</b> Bolivia</span>
-        <Contador />
+        <Contador cierre={config?.cierre ?? null} />
       </div>
 
       <div className="shell">
+        {config?.cerrado && (
+          <p className="aviso-cerrado">
+            La participación cerró. Los ganadores se anuncian a las {config.anuncio} en
+            el grupo de WhatsApp.
+          </p>
+        )}
+
         {!participante ? (
           <>
             <header className="hero">
@@ -83,7 +97,7 @@ export default function App() {
                 Cumple 3 misiones sencillas durante el evento y entra al sorteo de {PREMIOS} impresiones 3D.
               </p>
             </header>
-            <RegistroForm onRegistrado={alRegistrarse} />
+            {!cerrado && <RegistroForm onRegistrado={alRegistrarse} />}
           </>
         ) : (
           <>
@@ -122,7 +136,7 @@ export default function App() {
                   key={m.id}
                   mision={m}
                   envio={participante.misiones.find((e) => e.missionId === m.id)}
-                  onClick={() => setMisionAbierta(m.id)}
+                  onClick={() => { if (!cerrado) setMisionAbierta(m.id) }}
                 />
               ))}
             </div>
@@ -137,7 +151,7 @@ export default function App() {
                   key={m.id}
                   mision={m}
                   envio={participante.misiones.find((e) => e.missionId === m.id)}
-                  onClick={() => setMisionAbierta(m.id)}
+                  onClick={() => { if (!cerrado) setMisionAbierta(m.id) }}
                 />
               ))}
             </div>

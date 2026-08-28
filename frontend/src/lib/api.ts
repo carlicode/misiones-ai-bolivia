@@ -37,8 +37,18 @@ async function pedir<T>(ruta: string, init?: RequestInit): Promise<T> {
   return res.json() as Promise<T>
 }
 
+export interface ConfigEvento {
+  /** ISO del cierre de participación. null = todavía sin fecha configurada. */
+  cierre: string | null
+  cerrado: boolean
+  premios: number
+  anuncio: string
+}
+
 export const api = {
   health: () => pedir<{ ok: boolean; stage: string }>('/health'),
+
+  config: () => pedir<ConfigEvento>('/api/config'),
 
   registrar: (nombre: string, celular: string) =>
     pedir<Participante>('/api/participantes', {

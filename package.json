@@ -1,0 +1,14 @@
+{
+  "name": "misiones-ai-bolivia",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Utilidades del repo: generar el QR del stand y limpiar datos de prueba.",
+  "scripts": {
+    "qr": "node scripts/generar-qr.mjs",
+    "limpiar": "node scripts/limpiar-datos-de-prueba.mjs"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

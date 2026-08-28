@@ -16,6 +16,11 @@ provider:
     TABLA_SORTEOS: !Ref TablaSorteos
     BUCKET_FOTOS: !Ref BucketFotos
     STAFF_KEY: ${env:STAFF_KEY, 'cambiar-esta-clave'}
+    # Cierre de participacion. Vacio = no se cierra nada.
+    # Ejemplo para Bolivia (UTC-4): 2026-09-20T15:30:00-04:00
+    CIERRE_ISO: ${env:CIERRE_ISO, ''}
+    HORA_ANUNCIO: ${env:HORA_ANUNCIO, '16:00'}
+    PREMIOS: ${env:PREMIOS, '10'}
   httpApi:
     cors:
       allowedOrigins:

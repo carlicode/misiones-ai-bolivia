@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Hosting del frontend de Misiones AI Bolivia (S3 privado + CloudFront)
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+
+Resources:
+
+  # El bucket queda privado: nadie llega a el directamente, solo por CloudFront.
+  BucketSitio:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'ugai-web-${Stage}-${AWS::AccountId}'
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+
+  # Origin Access Control: CloudFront firma sus peticiones al bucket.
+  AccesoOrigen:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub 'ugai-oac-${Stage}'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  PoliticaBucket:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref BucketSitio
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${BucketSitio.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${Distribucion}'
+
+  Distribucion:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: Misiones AI Bolivia
+        DefaultRootObject: index.html
+        PriceClass: PriceClass_100   # Norteamerica y Europa: suficiente y mas barato
+        HttpVersion: http2
+        Origins:
+          - Id: sitio
+            DomainName: !GetAtt BucketSitio.RegionalDomainName
+            OriginAccessControlId: !GetAtt AccesoOrigen.Id
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: sitio
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          Compress: true
+          # Politica administrada CachingOptimized
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+        CustomErrorResponses:
+          # La app es una SPA: /staff no existe como archivo en S3, asi que
+          # las rutas del router tienen que caer en index.html.
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+
+Outputs:
+  Bucket:
+    Value: !Ref BucketSitio
+  DistribucionId:
+    Value: !Ref Distribucion
+  Url:
+    Value: !Sub 'https://${Distribucion.DomainName}'

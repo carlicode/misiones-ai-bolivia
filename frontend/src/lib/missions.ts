@@ -110,7 +110,12 @@ export const WHATSAPP_URL = 'https://chat.whatsapp.com/L2Dsv5BV1Xv3PmodNyrPvf?mo
 export const INSTAGRAM_URL = 'https://www.instagram.com/aws_ai_ug_bolivia/'
 export const INSTAGRAM_HANDLE = '@aws_ai_ug_bolivia'
 
-/** Cierre de participación: 28 de agosto de 2026, 15:30 (UTC-4, Bolivia). */
-export const DEADLINE = new Date('2026-08-28T15:30:00-04:00')
+/**
+ * La fecha de cierre y la hora del anuncio vienen del backend (`/api/config`),
+ * para poder cambiarlas sin recompilar la app y para que el cierre se aplique
+ * de verdad y no solo en pantalla.
+ *
+ * Estos valores son solo el respaldo mientras carga la configuración.
+ */
 export const ANUNCIO = '16:00'
 export const PREMIOS = 10

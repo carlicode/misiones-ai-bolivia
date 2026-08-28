@@ -659,3 +659,16 @@ h1, h2, h3 { text-wrap: balance; letter-spacing: -.02em; }
 
 .foto-picker .vacio svg { color: var(--text-faint); }
 .btn-icono { display: inline-flex; align-items: center; gap: 6px; }
+
+/* ---------- participación cerrada ---------- */
+.aviso-cerrado {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: var(--r-sm);
+  background: rgba(240,83,122,.09);
+  border: 1px solid rgba(240,83,122,.32);
+  color: var(--text);
+  font-size: .89rem;
+  line-height: 1.5;
+}
+.topbar .clock.urgente { color: var(--warn); }

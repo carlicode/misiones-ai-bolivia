@@ -4,13 +4,19 @@ const misiones = require('../services/misiones');
 const { urlDeSubida } = require('../lib/s3');
 const { esMisionValida } = require('../lib/misiones');
 const { calcularEstado } = require('../lib/misiones');
+const { soloAntesDelCierre, config } = require('../lib/evento');
 
 const router = express.Router();
 
 /** Envuelve un handler async para que los errores lleguen al middleware. */
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
-router.post('/participantes', wrap(async (req, res) => {
+/** Fecha de cierre y premios: la app los lee de aca, no los tiene quemados. */
+router.get('/config', (_req, res) => {
+  res.json(config());
+});
+
+router.post('/participantes', soloAntesDelCierre, wrap(async (req, res) => {
   const { nombre, celular } = req.body || {};
   const { participante, nuevo } = await participantes.registrar(nombre, celular);
   const lista = nuevo ? [] : await misiones.porParticipante(participante.id);
@@ -26,7 +32,7 @@ router.get('/participantes/:id', wrap(async (req, res) => {
   res.json(participantes.componer(participante, lista));
 }));
 
-router.post('/uploads/presign', wrap(async (req, res) => {
+router.post('/uploads/presign', soloAntesDelCierre, wrap(async (req, res) => {
   const { participanteId, missionId, contentType } = req.body || {};
 
   const participante = await participantes.porId(participanteId);
@@ -42,7 +48,7 @@ router.post('/uploads/presign', wrap(async (req, res) => {
   res.json({ uploadUrl, key });
 }));
 
-router.post('/misiones', wrap(async (req, res) => {
+router.post('/misiones', soloAntesDelCierre, wrap(async (req, res) => {
   const { participanteId, missionId, fotoKey, data } = req.body || {};
 
   const participante = await participantes.porId(participanteId);
