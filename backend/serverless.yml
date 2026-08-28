@@ -1,0 +1,138 @@
+service: ugai-cd2026
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: ${opt:stage, 'prod'}
+  memorySize: 512
+  timeout: 20
+  environment:
+    STAGE: ${self:provider.stage}
+    TABLA_PARTICIPANTES: !Ref TablaParticipantes
+    TABLA_MISIONES: !Ref TablaMisiones
+    BUCKET_FOTOS: !Ref BucketFotos
+    STAFF_KEY: ${env:STAFF_KEY, 'cambiar-esta-clave'}
+  httpApi:
+    cors:
+      allowedOrigins:
+        - '*'
+      allowedHeaders:
+        - Content-Type
+        - X-Staff-Key
+      allowedMethods:
+        - GET
+        - POST
+        - OPTIONS
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt TablaParticipantes.Arn
+            - !GetAtt TablaMisiones.Arn
+            - !Sub '${TablaParticipantes.Arn}/index/*'
+            - !Sub '${TablaMisiones.Arn}/index/*'
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:GetObject
+          Resource: !Sub '${BucketFotos.Arn}/*'
+
+functions:
+  api:
+    handler: src/lambda.handler
+    events:
+      - httpApi: '*'
+
+resources:
+  Resources:
+
+    TablaParticipantes:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ugai-participantes-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: celular
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          # Permite recuperar el progreso si la persona cambia de celular
+          # y evita registros duplicados con el mismo numero.
+          - IndexName: celular-index
+            KeySchema:
+              - AttributeName: celular
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    TablaMisiones:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ugai-misiones-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: participanteId
+            AttributeType: S
+          - AttributeName: missionId
+            AttributeType: S
+          - AttributeName: estado
+            AttributeType: S
+          - AttributeName: enviadoEn
+            AttributeType: S
+        KeySchema:
+          - AttributeName: participanteId
+            KeyType: HASH
+          - AttributeName: missionId
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          # Cola de moderacion: las pendientes mas antiguas primero.
+          - IndexName: estado-index
+            KeySchema:
+              - AttributeName: estado
+                KeyType: HASH
+              - AttributeName: enviadoEn
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+    BucketFotos:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ugai-fotos-${self:provider.stage}-${aws:accountId}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins: ['*']
+              AllowedMethods: [PUT, GET]
+              AllowedHeaders: ['*']
+              MaxAge: 3000
+        LifecycleConfiguration:
+          Rules:
+            # Las evidencias no sirven despues del evento.
+            - Id: borrar-a-los-90-dias
+              Status: Enabled
+              ExpirationInDays: 90
+
+  Outputs:
+    ApiUrl:
+      Value: !Sub 'https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com'
+    BucketFotos:
+      Value: !Ref BucketFotos

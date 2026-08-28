@@ -1,0 +1,24 @@
+{
+  "name": "ugai-cd2026-backend",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/lambda.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "deploy": "serverless deploy"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.658.0",
+    "@aws-sdk/client-s3": "^3.658.0",
+    "@aws-sdk/lib-dynamodb": "^3.658.0",
+    "@aws-sdk/s3-request-presigner": "^3.658.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "serverless": "^3.39.0"
+  }
+}
