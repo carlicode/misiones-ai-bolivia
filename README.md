@@ -11,9 +11,18 @@ que se proyecta en vivo.
 
 ## Cómo funciona
 
-**Para quien participa** — entra por un QR, escribe su nombre y celular, y ya
-está. Sin cuenta, sin contraseña. Sube cada misión cuando la tiene: no hay que
-esperar a completarlas todas.
+**Para quien participa** — entra por un QR y cae en una landing que explica
+todo antes de pedirle nada: qué misiones hay, que tenga las fotos listas, y que
+suba cada una apenas la tenga.
+
+**Su celular es su código.** La primera vez escribe nombre y número; después el
+número solo alcanza para volver a entrar desde cualquier dispositivo. Sin
+cuenta, sin contraseña.
+
+**Los bonus se abren al enviar las 3 obligatorias**, no al aprobarlas. Si
+dependiera de la aprobación, alguien que hizo todo temprano quedaría bloqueado
+porque el staff va atrasado con la cola, y eso termina en reclamos en el stand.
+Los bonus se pueden subir mucho después, sin apuro.
 
 **Para el staff** — un panel aparte, con clave, pensado para moderar desde el
 celular parado en el stand: foto grande, aprobar o rechazar, siguiente.

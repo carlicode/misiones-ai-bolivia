@@ -1,35 +1,38 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { api, type Participante, type ConfigEvento } from './lib/api'
 import { guardarId, leerId, borrarId } from './lib/storage'
-import { MISSIONS, PREMIOS, WHATSAPP_URL, REQUIRED_IDS, type MissionId } from './lib/missions'
-import RegistroForm from './components/RegistroForm'
-import Progreso from './components/Progreso'
-import MisionCard from './components/MisionCard'
+import { MISSIONS, type MissionId } from './lib/missions'
+import Menu from './components/Menu'
+import Landing from './components/Landing'
+import Acceso from './components/Acceso'
+import Panel from './components/Panel'
 import MisionSheet from './components/MisionSheet'
-import Lineamientos from './components/Lineamientos'
-import ComoSeHizo from './components/ComoSeHizo'
 import Contador from './components/Contador'
-import Premio from './components/Premio'
 import Confeti from './components/Confeti'
 import Toast from './components/Toast'
 
+type Vista = 'landing' | 'acceso' | 'panel'
 type ToastState = { tipo: 'ok' | 'error'; mensaje: string } | null
 
 export default function App() {
+  const [vista, setVista] = useState<Vista>('landing')
   const [participante, setParticipante] = useState<Participante | null>(null)
   const [cargando, setCargando] = useState(true)
   const [misionAbierta, setMisionAbierta] = useState<MissionId | null>(null)
   const [toast, setToast] = useState<ToastState>(null)
   const [stats, setStats] = useState<{ participantes: number } | null>(null)
-  const [confeti, setConfeti] = useState(false)
   const [config, setConfig] = useState<ConfigEvento | null>(null)
+  const [confeti, setConfeti] = useState(false)
+  const [menuAbierto, setMenuAbierto] = useState(false)
+  const refComoSeHizo = useRef<HTMLDivElement>(null)
 
+  // Quien ya participó entra directo a su panel, sin pasar por la landing.
   useEffect(() => {
     const id = leerId()
     if (!id) { setCargando(false); return }
 
     api.obtener(id)
-      .then(setParticipante)
+      .then((p) => { setParticipante(p); setVista('panel') })
       .catch(() => borrarId())
       .finally(() => setCargando(false))
   }, [])
@@ -38,8 +41,6 @@ export default function App() {
     let activo = true
     function cargar() {
       api.stats().then((s) => { if (activo) setStats(s) }).catch(() => {})
-      // Se relee junto con las stats para que el cierre entre en efecto
-      // sin que nadie tenga que recargar la página.
       api.config().then((c) => { if (activo) setConfig(c) }).catch(() => {})
     }
     cargar()
@@ -47,22 +48,34 @@ export default function App() {
     return () => { activo = false; clearInterval(id) }
   }, [])
 
-  function alRegistrarse(p: Participante) {
+  function alEntrar(p: Participante) {
     guardarId(p.id)
     setParticipante(p)
+    setVista('panel')
+    window.scrollTo(0, 0)
   }
 
   function alEnviarMision(p: Participante) {
     const yaEraElegible = participante?.elegible
+    const yaTeniaBonus = participante?.bonusHabilitado
     setParticipante(p)
-    // El momento que vale la pena celebrar: acaba de entrar al sorteo.
+
     if (!yaEraElegible && p.elegible) setConfeti(true)
+
     setToast({
       tipo: 'ok',
       mensaje: !yaEraElegible && p.elegible
         ? '¡Listo! Ya estás participando en el sorteo.'
-        : 'Misión enviada. La revisamos y te avisamos aquí mismo.',
+        : !yaTeniaBonus && p.bonusHabilitado
+          ? 'Enviaste las 3 obligatorias. Ya se abrieron los bonus.'
+          : 'Misión enviada. La revisamos y te avisamos aquí mismo.',
     })
+  }
+
+  function irAComoSeHizo() {
+    setVista('landing')
+    // Espera a que la landing esté montada antes de saltar.
+    setTimeout(() => refComoSeHizo.current?.scrollIntoView({ behavior: 'smooth' }), 60)
   }
 
   const cerrado = config?.cerrado ?? false
@@ -74,100 +87,42 @@ export default function App() {
   return (
     <>
       <div className="topbar">
-        <span className="word"><b>AWS UG AI</b> Bolivia</span>
+        <Menu
+          abierto={menuAbierto}
+          onAbrir={() => setMenuAbierto(true)}
+          onCerrar={() => setMenuAbierto(false)}
+          onComoSeHizo={irAComoSeHizo}
+        />
+        <span className="word"><b>AWS AI UG</b> Bolivia</span>
         <Contador cierre={config?.cierre ?? null} />
       </div>
 
       <div className="shell">
-        {config?.cerrado && (
+        {cerrado && (
           <p className="aviso-cerrado">
-            La participación cerró. Los ganadores se anuncian a las {config.anuncio} en
+            La participación cerró. Los ganadores se anuncian a las {config?.anuncio} en
             el grupo de WhatsApp.
           </p>
         )}
 
-        {!participante ? (
-          <>
-            <header className="hero">
-              <Premio />
-              <p className="eyebrow">Community Day 2026 · Sorteo</p>
-              <h1 className="hero-title">
-                Gana una <span className="accent">impresión 3D</span>
-              </h1>
-              <p className="hero-lede">
-                Cumple 3 misiones sencillas durante el evento y entra al sorteo de {PREMIOS} impresiones 3D.
-              </p>
-            </header>
-            {!cerrado && <RegistroForm onRegistrado={alRegistrarse} />}
-            <ComoSeHizo />
-          </>
-        ) : (
-          <>
-            <section className="resumen">
-              <p className="saludo">
-                Hola, {participante.nombre.split(' ')[0]}
-                <span>Tu progreso en el sorteo</span>
-              </p>
-            </section>
+        {vista === 'landing' && (
+          <Landing
+            onParticipar={() => { setVista('acceso'); window.scrollTo(0, 0) }}
+            refComoSeHizo={refComoSeHizo}
+          />
+        )}
 
-            <div className="progreso">
-              <Progreso hechas={participante.obligatoriasAprobadas} total={REQUIRED_IDS.length} />
-              <p className="txt">
-                <b>{participante.obligatoriasAprobadas} de {REQUIRED_IDS.length}</b> misiones obligatorias aprobadas
-              </p>
-            </div>
+        {vista === 'acceso' && (
+          <Acceso onEntro={alEntrar} onVolver={() => setVista('landing')} />
+        )}
 
-            <span className={`badge-elegible ${participante.elegible ? 'si' : 'no'}`}>
-              <span className="dot" aria-hidden="true" />
-              {participante.elegible
-                ? `Participando · ${participante.entradas} entrada${participante.entradas === 1 ? '' : 's'}`
-                : 'Aún no participas'}
-            </span>
-
-            <a className="btn btn-wa" href={WHATSAPP_URL} target="_blank" rel="noreferrer" style={{ marginTop: 20 }}>
-              Únete al grupo de la comunidad
-            </a>
-
-            <div className="grupo-titulo">
-              <h2>Obligatorias</h2>
-              <span className="sub">para entrar al sorteo</span>
-            </div>
-            <div className="mislist">
-              {MISSIONS.filter((m) => m.required).map((m) => (
-                <MisionCard
-                  key={m.id}
-                  mision={m}
-                  envio={participante.misiones.find((e) => e.missionId === m.id)}
-                  onClick={() => { if (!cerrado) setMisionAbierta(m.id) }}
-                />
-              ))}
-            </div>
-
-            <div className="grupo-titulo">
-              <h2>Bonus</h2>
-              <span className="sub">+1 entrada cada una</span>
-            </div>
-            <div className="mislist">
-              {MISSIONS.filter((m) => !m.required).map((m) => (
-                <MisionCard
-                  key={m.id}
-                  mision={m}
-                  envio={participante.misiones.find((e) => e.missionId === m.id)}
-                  onClick={() => { if (!cerrado) setMisionAbierta(m.id) }}
-                />
-              ))}
-            </div>
-
-            <Lineamientos />
-            <ComoSeHizo />
-
-            <footer className="pie">
-              <span>Debes estar presente para recibir tu premio.</span>
-              {stats && (
-                <span className="contador"><b>{stats.participantes}</b> participando</span>
-              )}
-            </footer>
-          </>
+        {vista === 'panel' && participante && (
+          <Panel
+            participante={participante}
+            cerrado={cerrado}
+            stats={stats}
+            onAbrirMision={setMisionAbierta}
+          />
         )}
       </div>
 

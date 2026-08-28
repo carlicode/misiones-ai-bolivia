@@ -23,6 +23,9 @@ export interface Participante {
   entradas: number
   bonusAprobados: number
   obligatoriasAprobadas: number
+  obligatoriasEnviadas: number
+  /** Los bonus se abren al enviar las 3 obligatorias, no al aprobarlas. */
+  bonusHabilitado: boolean
 }
 
 async function pedir<T>(ruta: string, init?: RequestInit): Promise<T> {
@@ -54,6 +57,13 @@ export const api = {
     pedir<Participante>('/api/participantes', {
       method: 'POST',
       body: JSON.stringify({ nombre, celular }),
+    }),
+
+  /** Volver a entrar: el celular es la única llave. */
+  entrar: (celular: string) =>
+    pedir<Participante>('/api/entrar', {
+      method: 'POST',
+      body: JSON.stringify({ celular }),
     }),
 
   obtener: (id: string) => pedir<Participante>(`/api/participantes/${id}`),

@@ -42,6 +42,20 @@ function validarCampos(missionId, data = {}) {
  * Las entradas aumentan la probabilidad, pero nadie gana mas de un premio:
  * eso se resuelve en el sorteo, retirando a la persona al salir sorteada.
  */
+/**
+ * Los bonus se habilitan cuando ya se ENVIARON las 3 obligatorias, no cuando
+ * estan aprobadas. Si dependiera de la aprobacion, alguien que hizo todo
+ * temprano quedaria bloqueado solo porque el staff va atrasado con la cola,
+ * y eso termina en reclamos en el stand. La intencion se cumple igual:
+ * primero las obligatorias, despues el bonus.
+ */
+function bonusHabilitado(misiones = []) {
+  const enviadas = new Set(
+    misiones.filter((m) => m.estado !== 'rechazada').map((m) => m.missionId)
+  );
+  return OBLIGATORIAS.every((id) => enviadas.has(id));
+}
+
 function calcularEstado(misiones = []) {
   const aprobadas = new Set(
     misiones.filter((m) => m.estado === 'aprobada').map((m) => m.missionId)
@@ -50,12 +64,22 @@ function calcularEstado(misiones = []) {
   const elegible = OBLIGATORIAS.every((id) => aprobadas.has(id));
   const bonusAprobados = BONUS.filter((id) => aprobadas.has(id)).length;
 
+  const enviadas = new Set(
+    misiones.filter((m) => m.estado !== 'rechazada').map((m) => m.missionId)
+  );
+
   return {
     elegible,
     bonusAprobados,
     entradas: elegible ? 1 + bonusAprobados : 0,
     obligatoriasAprobadas: OBLIGATORIAS.filter((id) => aprobadas.has(id)).length,
+    obligatoriasEnviadas: OBLIGATORIAS.filter((id) => enviadas.has(id)).length,
+    bonusHabilitado: bonusHabilitado(misiones),
   };
+}
+
+function esBonus(missionId) {
+  return BONUS.includes(missionId);
 }
 
 module.exports = {
@@ -64,6 +88,8 @@ module.exports = {
   TODAS,
   CAMPOS,
   esMisionValida,
+  esBonus,
   validarCampos,
   calcularEstado,
+  bonusHabilitado,
 };

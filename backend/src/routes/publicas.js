@@ -2,7 +2,7 @@ const express = require('express');
 const participantes = require('../services/participantes');
 const misiones = require('../services/misiones');
 const { urlDeSubida } = require('../lib/s3');
-const { esMisionValida } = require('../lib/misiones');
+const { esMisionValida, esBonus, bonusHabilitado } = require('../lib/misiones');
 const { calcularEstado } = require('../lib/misiones');
 const { soloAntesDelCierre, config } = require('../lib/evento');
 
@@ -21,6 +21,25 @@ router.post('/participantes', soloAntesDelCierre, wrap(async (req, res) => {
   const { participante, nuevo } = await participantes.registrar(nombre, celular);
   const lista = nuevo ? [] : await misiones.porParticipante(participante.id);
   res.status(nuevo ? 201 : 200).json(participantes.componer(participante, lista));
+}));
+
+/**
+ * Volver a entrar con el celular como unica llave. El nombre solo se pide
+ * la primera vez; despues el numero alcanza para recuperar el progreso.
+ */
+router.post('/entrar', wrap(async (req, res) => {
+  const celular = participantes.normalizarCelular(req.body?.celular);
+  if (celular.length < 8) {
+    return res.status(400).json({ error: 'Escribe tu celular completo' });
+  }
+
+  const participante = await participantes.porCelular(celular);
+  if (!participante) {
+    return res.status(404).json({ error: 'Ese número todavía no está registrado' });
+  }
+
+  const lista = await misiones.porParticipante(participante.id);
+  res.json(participantes.componer(participante, lista));
 }));
 
 router.get('/participantes/:id', wrap(async (req, res) => {
@@ -42,6 +61,14 @@ router.post('/uploads/presign', soloAntesDelCierre, wrap(async (req, res) => {
   if (!esMisionValida(missionId)) {
     return res.status(400).json({ error: 'Mision desconocida' });
   }
+  if (esBonus(missionId)) {
+    const lista = await misiones.porParticipante(participanteId);
+    if (!bonusHabilitado(lista)) {
+      return res.status(403).json({
+        error: 'Primero envía las 3 misiones obligatorias. Después se abren los bonus.',
+      });
+    }
+  }
 
   const key = `${participanteId}/${missionId}-${Date.now()}`;
   const uploadUrl = await urlDeSubida(key, contentType);
@@ -55,6 +82,15 @@ router.post('/misiones', soloAntesDelCierre, wrap(async (req, res) => {
   if (!participante) {
     return res.status(404).json({ error: 'No encontramos tu registro' });
   }
+  if (esBonus(missionId)) {
+    const previas = await misiones.porParticipante(participanteId);
+    if (!bonusHabilitado(previas)) {
+      return res.status(403).json({
+        error: 'Primero envía las 3 misiones obligatorias. Después se abren los bonus.',
+      });
+    }
+  }
+
   // La foto tiene que pertenecer a esta persona: la key la generamos nosotros.
   if (!String(fotoKey || '').startsWith(`${participanteId}/`)) {
     return res.status(400).json({ error: 'La foto no corresponde a tu registro' });
