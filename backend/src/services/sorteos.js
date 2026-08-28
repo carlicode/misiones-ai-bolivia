@@ -18,14 +18,29 @@ async function ultimo() {
 }
 
 async function ejecutar(elegibles, cantidad) {
-  if (elegibles.length === 0) {
+  // Quien ya gano un premio sorpresa no entra a la tombola, y su premio
+  // descuenta del total: son 10 impresiones, no 10 mas las sorpresas.
+  const sorpresas = elegibles.filter((e) => e.ganadorSorpresa);
+  const enTombola = elegibles.filter((e) => !e.ganadorSorpresa);
+  const cuposRestantes = Math.max(0, cantidad - sorpresas.length);
+
+  if (cuposRestantes === 0) {
+    throw Object.assign(
+      new Error(`Ya se entregaron los ${cantidad} premios como sorpresa. No queda nada por sortear.`),
+      { status: 400 }
+    );
+  }
+  if (enTombola.length === 0) {
     throw Object.assign(
       new Error('Todavía no hay nadie elegible para sortear'),
       { status: 400 }
     );
   }
 
-  const resultado = sortear(elegibles, cantidad);
+  const resultado = sortear(enTombola, cuposRestantes);
+  resultado.premiosSorpresa = sorpresas.map((s) => ({
+    id: s.id, nombre: s.nombre, celular: s.celular, motivo: s.sorpresaMotivo,
+  }));
 
   await db.send(new PutCommand({
     TableName: config.tablaSorteos,

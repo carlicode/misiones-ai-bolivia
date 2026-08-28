@@ -3,6 +3,7 @@ const { soloStaff } = require('../lib/staffAuth');
 const staffSvc = require('../services/staff');
 const misionesSvc = require('../services/misiones');
 const sorteosSvc = require('../services/sorteos');
+const participantesSvc = require('../services/participantes');
 
 const router = express.Router();
 
@@ -40,6 +41,16 @@ router.get('/elegibles', wrap(async (_req, res) => {
 
 router.get('/buscar', wrap(async (req, res) => {
   res.json({ resultados: await staffSvc.buscar(req.query.q) });
+}));
+
+/** Declarar (o deshacer) un premio sorpresa entregado en el momento. */
+router.post('/sorpresa', wrap(async (req, res) => {
+  const { participanteId, motivo, marcar = true } = req.body || {};
+  if (!participanteId) {
+    return res.status(400).json({ error: 'Falta identificar a la persona' });
+  }
+  await participantesSvc.marcarSorpresa(participanteId, { motivo, marcar });
+  res.json({ ok: true, totales: await staffSvc.totales() });
 }));
 
 /** El resultado guardado, para volver a verlo sin re-sortear. */

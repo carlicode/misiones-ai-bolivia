@@ -53,7 +53,7 @@ export default function Tombola({ clave }: Props) {
     }
 
     setSorteo(resultado)
-    const nombres = elegibles.map((e) => e.nombre)
+    const nombres = enTombola.map((e) => e.nombre)
 
     // Revela uno por uno: el suspenso es el punto de la animación.
     for (const ganador of resultado.ganadores) {
@@ -91,7 +91,10 @@ export default function Tombola({ clave }: Props) {
     }
   }
 
-  const totalEntradas = elegibles.reduce((s, e) => s + e.entradas, 0)
+  const sorpresas = elegibles.filter((e) => e.ganadorSorpresa)
+  const enTombola = elegibles.filter((e) => !e.ganadorSorpresa)
+  const totalEntradas = enTombola.reduce((s, e) => s + e.entradas, 0)
+  const porSortear = Math.max(0, PREMIOS - sorpresas.length)
 
   return (
     <div className="tombola">
@@ -100,11 +103,17 @@ export default function Tombola({ clave }: Props) {
       {fase === 'listo' && (
         <>
           <div className="tb-resumen">
-            <p><b>{elegibles.length}</b> {elegibles.length === 1 ? 'persona elegible' : 'personas elegibles'}</p>
-            <p><b>{totalEntradas}</b> entradas en la tómbola</p>
+            <p><b>{enTombola.length}</b> {enTombola.length === 1 ? 'persona en la tómbola' : 'personas en la tómbola'}</p>
+            <p><b>{totalEntradas}</b> entradas</p>
+            {sorpresas.length > 0 && (
+              <p className="tb-sorpresas">
+                <b>{sorpresas.length}</b> {sorpresas.length === 1 ? 'premio entregado' : 'premios entregados'} como
+                sorpresa. Quedan <b>{porSortear}</b> por sortear.
+              </p>
+            )}
             <p className="tb-nota">
-              Se sortean {PREMIOS} premios. Quien tiene bonus aparece varias veces,
-              pero al salir sorteado se retira: nadie gana dos premios.
+              Quien tiene bonus aparece varias veces, pero al salir sorteado se
+              retira: nadie gana dos premios. Los ganadores sorpresa no entran.
             </p>
           </div>
 
@@ -112,9 +121,13 @@ export default function Tombola({ clave }: Props) {
             <button
               className="btn btn-primary"
               onClick={() => setConfirmando(true)}
-              disabled={elegibles.length === 0}
+              disabled={enTombola.length === 0 || porSortear === 0}
             >
-              {elegibles.length === 0 ? 'Todavía no hay elegibles' : 'Correr el sorteo'}
+              {enTombola.length === 0
+                ? 'Todavía no hay elegibles'
+                : porSortear === 0
+                  ? 'Ya se entregaron los 10 premios'
+                  : `Sortear ${porSortear} ${porSortear === 1 ? 'premio' : 'premios'}`}
             </button>
           ) : (
             <div className="tb-confirmar">

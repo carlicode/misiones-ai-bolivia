@@ -73,6 +73,25 @@ Con eso le explicas en diez segundos qué le falta.
 
 ---
 
+## Premios sorpresa
+
+Puedes entregar un premio en el momento, sin esperar al sorteo: al primero
+que completa las 3 misiones, a la primera foto con un speaker, a quien
+termina un taller. Sirve para animar el evento.
+
+Búscalo en **Buscar** o en **Elegibles**, y toca **Darle premio sorpresa**.
+Después aparece **Avisarle por WhatsApp**: se abre su chat con el mensaje ya
+escrito y tú solo aprietas enviar.
+
+> **Ojo:** son 10 premios en total. Cada sorpresa que entregues sale de esos
+> 10, así que el sorteo del final reparte menos. El panel te lo muestra: si
+> entregaste 3 sorpresas, el botón dirá «Sortear 7 premios». Quien ganó
+> sorpresa no entra a la tómbola, porque nadie gana dos veces.
+
+Si te equivocas, **Deshacer** lo devuelve a la tómbola.
+
+---
+
 ## El sorteo
 
 Pestaña **Sorteo**. Antes de correrlo:

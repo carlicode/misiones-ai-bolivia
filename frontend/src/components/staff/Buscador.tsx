@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { staffApi, type ResultadoBusqueda } from '../../lib/staffApi'
 import { MISSIONS, REQUIRED_IDS } from '../../lib/missions'
+import AccionesGanador from './AccionesGanador'
 
 interface Props {
   clave: string
@@ -10,6 +11,8 @@ export default function Buscador({ clave }: Props) {
   const [q, setQ] = useState('')
   const [resultados, setResultados] = useState<ResultadoBusqueda[]>([])
   const [buscando, setBuscando] = useState(false)
+  // Se incrementa al marcar un premio sorpresa, para volver a consultar.
+  const [version, setVersion] = useState(0)
 
   useEffect(() => {
     if (q.trim().length < 2) { setResultados([]); return }
@@ -24,7 +27,7 @@ export default function Buscador({ clave }: Props) {
     }, 350)
 
     return () => clearTimeout(id)
-  }, [q, clave])
+  }, [q, clave, version])
 
   return (
     <>
@@ -71,6 +74,14 @@ export default function Buscador({ clave }: Props) {
                 )
               })}
             </div>
+            <AccionesGanador
+              clave={clave}
+              participanteId={r.id}
+              nombre={r.nombre}
+              celular={r.celular}
+              ganadorSorpresa={r.ganadorSorpresa}
+              onCambio={() => setVersion((v) => v + 1)}
+            />
           </li>
         ))}
       </ul>

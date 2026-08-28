@@ -48,10 +48,6 @@ export default function Landing({ onParticipar, refComoSeHizo }: Props) {
           3D de la salteñita del UG.
         </p>
 
-        <button className="btn btn-primary btn-participar" onClick={onParticipar}>
-          Participar
-          <ArrowRight size={18} strokeWidth={2.2} />
-        </button>
       </header>
 
       <section className="bloque">
@@ -70,10 +66,15 @@ export default function Landing({ onParticipar, refComoSeHizo }: Props) {
             )
           })}
         </ul>
+
+        <button className="btn btn-primary btn-participar" onClick={onParticipar}>
+          Participar
+          <ArrowRight size={18} strokeWidth={2.2} />
+        </button>
       </section>
 
       <section className="bloque">
-        <h2 className="bloque-titulo">Las misiones</h2>
+        <h2 className="bloque-titulo">Cuáles son las misiones</h2>
 
         <p className="grupo-nota">
           <b>Obligatorias.</b> Las 3 te dan tu entrada al sorteo.
@@ -119,7 +120,10 @@ export default function Landing({ onParticipar, refComoSeHizo }: Props) {
           <li>Con las 3 obligatorias aprobadas entras con <b>1 entrada</b>.</li>
           <li>Cada bonus aprobado suma <b>1 entrada más</b>, hasta 4.</li>
           <li>Más entradas suben tu probabilidad, pero <b>nadie gana dos premios</b>.</li>
-          <li>Los {PREMIOS} ganadores se anuncian a las <b>{ANUNCIO}</b> en el grupo de WhatsApp.</li>
+          <li>
+            Todos los ganadores se anuncian a las <b>{ANUNCIO}</b> en el grupo de
+            WhatsApp, pero podemos darte sorpresas antes 😉
+          </li>
           <li>Tienes que <b>estar presente en el evento</b> para recibir tu impresión 3D.</li>
         </ul>
       </section>

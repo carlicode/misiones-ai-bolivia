@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { staffApi, type Elegible } from '../../lib/staffApi'
+import AccionesGanador from './AccionesGanador'
 
 interface Props {
   clave: string
@@ -10,12 +11,13 @@ export default function Elegibles({ clave }: Props) {
   const [lista, setLista] = useState<Elegible[] | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [copiado, setCopiado] = useState(false)
+  const [version, setVersion] = useState(0)
 
   useEffect(() => {
     staffApi.elegibles(clave)
       .then((r) => setLista(r.elegibles))
       .catch(() => setError('No se pudo cargar la lista.'))
-  }, [clave])
+  }, [clave, version])
 
   async function copiar() {
     if (!lista) return
@@ -53,14 +55,24 @@ export default function Elegibles({ clave }: Props) {
 
       <ul className="elegibles">
         {lista.map((e) => (
-          <li key={e.id}>
-            <span className="el-nombre">
-              {e.nombre}
-              <span className="el-cel">{e.celular}</span>
-            </span>
-            <span className="el-entradas" title={`${e.bonusAprobados} bonus aprobados`}>
-              {e.entradas}×
-            </span>
+          <li key={e.id} className={e.ganadorSorpresa ? 'es-sorpresa' : ''}>
+            <div className="el-fila">
+              <span className="el-nombre">
+                {e.nombre}
+                <span className="el-cel">{e.celular}</span>
+              </span>
+              <span className="el-entradas" title={`${e.bonusAprobados} bonus aprobados`}>
+                {e.entradas}×
+              </span>
+            </div>
+            <AccionesGanador
+              clave={clave}
+              participanteId={e.id}
+              nombre={e.nombre}
+              celular={e.celular}
+              ganadorSorpresa={e.ganadorSorpresa}
+              onCambio={() => setVersion((v) => v + 1)}
+            />
           </li>
         ))}
       </ul>

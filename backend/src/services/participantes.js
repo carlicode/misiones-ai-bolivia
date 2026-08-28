@@ -1,5 +1,5 @@
 const { randomUUID } = require('crypto');
-const { GetCommand, PutCommand, QueryCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
+const { GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 const db = require('../lib/db');
 const config = require('../lib/config');
 const { calcularEstado } = require('../lib/misiones');
@@ -80,6 +80,35 @@ function componer(participante, misiones) {
   };
 }
 
+/**
+ * Premio sorpresa: el staff puede declarar ganador a alguien en el momento,
+ * por ejemplo al primero que sube cierta mision.
+ *
+ * Quien gana asi queda FUERA de la tombola y su premio descuenta del total,
+ * porque los premios son 10 y nadie gana dos veces. Sin esto se regalarian
+ * mas impresiones de las que hay.
+ */
+async function marcarSorpresa(id, { motivo, marcar }) {
+  const participante = await porId(id);
+  if (!participante) {
+    throw Object.assign(new Error('No encontramos a esa persona'), { status: 404 });
+  }
+
+  const { Attributes } = await db.send(new UpdateCommand({
+    TableName: config.tablaParticipantes,
+    Key: { id },
+    UpdateExpression: 'SET ganadorSorpresa = :g, sorpresaMotivo = :m, sorpresaEn = :t',
+    ExpressionAttributeValues: {
+      ':g': Boolean(marcar),
+      ':m': marcar ? String(motivo || '').slice(0, 160) : null,
+      ':t': marcar ? new Date().toISOString() : null,
+    },
+    ReturnValues: 'ALL_NEW',
+  }));
+
+  return Attributes;
+}
+
 async function contar() {
   const { Count } = await db.send(new ScanCommand({
     TableName: config.tablaParticipantes,
@@ -102,4 +131,7 @@ async function listarTodos() {
   return items;
 }
 
-module.exports = { registrar, porId, porCelular, componer, contar, listarTodos, normalizarCelular };
+module.exports = {
+  registrar, porId, porCelular, componer, contar, listarTodos,
+  normalizarCelular, marcarSorpresa,
+};

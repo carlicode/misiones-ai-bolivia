@@ -18,6 +18,8 @@ export interface Totales {
   pendientes: number
   elegibles: number
   entradas: number
+  /** Premios entregados en el momento; descuentan del sorteo. */
+  sorpresas: number
 }
 
 export interface Elegible {
@@ -26,12 +28,16 @@ export interface Elegible {
   celular: string
   entradas: number
   bonusAprobados: number
+  ganadorSorpresa: boolean
+  sorpresaMotivo: string | null
 }
 
 export interface ResultadoBusqueda {
   id: string
   nombre: string
   celular: string
+  ganadorSorpresa: boolean
+  sorpresaMotivo: string | null
   elegible: boolean
   entradas: number
   obligatoriasAprobadas: number
@@ -63,6 +69,7 @@ export interface Ganador {
 
 export interface Sorteo {
   ganadores: Ganador[]
+  premiosSorpresa?: { id: string; nombre: string; celular: string; motivo: string | null }[]
   semilla: string
   sorteadoEn: string
   totalElegibles: number
@@ -91,6 +98,13 @@ export const staffApi = {
 
   buscar: (clave: string, q: string) =>
     pedir<{ resultados: ResultadoBusqueda[] }>(`/buscar?q=${encodeURIComponent(q)}`, clave),
+
+  /** Declarar (o deshacer) un premio sorpresa. */
+  sorpresa: (clave: string, participanteId: string, motivo: string | null, marcar: boolean) =>
+    pedir<{ ok: true; totales: Totales }>('/sorpresa', clave, {
+      method: 'POST',
+      body: JSON.stringify({ participanteId, motivo, marcar }),
+    }),
 
   ultimoSorteo: (clave: string) => pedir<Sorteo | null>('/sorteo', clave),
 

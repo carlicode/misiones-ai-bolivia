@@ -60,11 +60,14 @@ async function totales() {
     }
   }
 
+  const sorpresas = [...porId.values()].filter((p) => p.ganadorSorpresa).length;
+
   return {
     participantes: porId.size,
     pendientes: todas.filter((m) => m.estado === 'pendiente').length,
     elegibles,
     entradas,
+    sorpresas,
   };
 }
 
@@ -96,6 +99,8 @@ async function elegibles() {
       celular: p.celular,
       entradas: estado.entradas,
       bonusAprobados: estado.bonusAprobados,
+      ganadorSorpresa: Boolean(p.ganadorSorpresa),
+      sorpresaMotivo: p.sorpresaMotivo || null,
     });
   }
 
@@ -133,6 +138,8 @@ async function buscar(consulta) {
         id: p.id,
         nombre: p.nombre,
         celular: p.celular,
+        ganadorSorpresa: Boolean(p.ganadorSorpresa),
+        sorpresaMotivo: p.sorpresaMotivo || null,
         ...calcularEstado(misiones),
         misiones: misiones.map((m) => ({
           missionId: m.missionId,

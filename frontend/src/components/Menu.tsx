@@ -38,7 +38,7 @@ export default function Menu({ abierto, onAbrir, onCerrar, onComoSeHizo }: Props
       {abierto && (
         <div className="menu-fondo" onClick={onCerrar}>
           <nav className="menu" onClick={(e) => e.stopPropagation()} aria-label="Menú">
-            <p className="menu-titulo">La comunidad</p>
+            <p className="menu-titulo">Únete a la comunidad</p>
             <ul>
               {REDES.map((r) => {
                 const Icono = r.icono
@@ -57,7 +57,7 @@ export default function Menu({ abierto, onAbrir, onCerrar, onComoSeHizo }: Props
               })}
             </ul>
 
-            <p className="menu-titulo">Esta app</p>
+            <p className="menu-titulo">Detrás de esta app</p>
             <ul>
               <li>
                 <button onClick={() => { onCerrar(); onComoSeHizo() }}>
