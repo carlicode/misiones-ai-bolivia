@@ -196,12 +196,45 @@ nombre o celular y muestra el estado de cada una de sus misiones.
 - **Contador regresivo** fijo arriba, y contador social abajo (*«N
   participando»*) para que se note que la gente está entrando.
 
+## Ensayo de carga
+
+Simulando **200 participantes con 900 evidencias** contra la API real:
+
+| | p50 | p95 |
+|---|---|---|
+| Registro | 229 ms | 1.8 s |
+| Pedir URL de subida | 221 ms | 254 ms |
+| Subir la foto a S3 | 620 ms | 1.3 s |
+| Guardar la misión | 231 ms | 267 ms |
+
+**2000 peticiones, 900 fotos, 0 errores.** Costo estimado del evento completo
+(300 personas): **menos de 20 centavos de dólar**.
+
+> **La cuenta tiene un límite de 10 Lambdas en paralelo** (el default de AWS es
+> 1000). Sin reintentos, 6 de cada 120 registros fallaban con 503 en los picos.
+> Con [`reintentar.ts`](frontend/src/lib/reintentar.ts) el problema desaparece,
+> pero conviene pedir un aumento de cuota antes del evento:
+> `aws service-quotas request-service-quota-increase --service-code lambda --quota-code L-B99A9384 --desired-value 100`
+
+Para dejar limpio después de un ensayo:
+
+```bash
+BUCKET_FOTOS=ugai-fotos-prod-<cuenta> node scripts/limpiar-datos-de-prueba.mjs
+```
+
+> Borra **todo**, no distingue datos de prueba de datos reales. No lo corras
+> una vez que la gente empiece a participar.
+
+---
+
 ## Pendiente
 
 - [ ] Fecha y hora reales del evento en `DEADLINE`
       ([`frontend/src/lib/missions.ts`](frontend/src/lib/missions.ts)) — hoy
       tiene un valor de marcador para el contador regresivo
 - [ ] Ensayo general con el equipo antes del día del evento
+      (la guía está en [GUIA-STAFF.md](GUIA-STAFF.md))
+- [ ] Pedir el aumento de cuota de Lambda (ver arriba)
 
 ---
 
