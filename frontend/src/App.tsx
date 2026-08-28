@@ -8,6 +8,7 @@ import MisionCard from './components/MisionCard'
 import MisionSheet from './components/MisionSheet'
 import Lineamientos from './components/Lineamientos'
 import Contador from './components/Contador'
+import Premio from './components/Premio'
 import Toast from './components/Toast'
 
 type ToastState = { tipo: 'ok' | 'error'; mensaje: string } | null
@@ -69,6 +70,7 @@ export default function App() {
         {!participante ? (
           <>
             <header className="hero">
+              <Premio />
               <p className="eyebrow">Community Day 2026 · Sorteo</p>
               <h1 className="hero-title">
                 Gana una <span className="accent">impresión 3D</span>

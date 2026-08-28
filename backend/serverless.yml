@@ -13,6 +13,7 @@ provider:
     STAGE: ${self:provider.stage}
     TABLA_PARTICIPANTES: !Ref TablaParticipantes
     TABLA_MISIONES: !Ref TablaMisiones
+    TABLA_SORTEOS: !Ref TablaSorteos
     BUCKET_FOTOS: !Ref BucketFotos
     STAFF_KEY: ${env:STAFF_KEY, 'cambiar-esta-clave'}
   httpApi:
@@ -39,6 +40,7 @@ provider:
           Resource:
             - !GetAtt TablaParticipantes.Arn
             - !GetAtt TablaMisiones.Arn
+            - !GetAtt TablaSorteos.Arn
             - !Sub '${TablaParticipantes.Arn}/index/*'
             - !Sub '${TablaMisiones.Arn}/index/*'
         - Effect: Allow
@@ -108,6 +110,18 @@ resources:
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL
+
+    TablaSorteos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ugai-sorteos-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
 
     BucketFotos:
       Type: AWS::S3::Bucket

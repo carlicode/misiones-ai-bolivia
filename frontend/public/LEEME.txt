@@ -1,0 +1,9 @@
+Guarda aqui la foto del premio con este nombre exacto:
+
+  premio-3d.png
+
+Es la impresion 3D de la salteñita con el cubo de AWS sobre la base
+"AWS AI UG BOLIVIA". Idealmente PNG con fondo transparente.
+
+La app la busca en /premio-3d.png y la muestra flotando en el hero.
+Si el archivo no esta, el hero se muestra igual sin la imagen.

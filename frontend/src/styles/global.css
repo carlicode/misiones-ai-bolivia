@@ -552,3 +552,141 @@ h1, h2, h3 { text-wrap: balance; letter-spacing: -.02em; }
 .mini-aprobada { border-color: rgba(61,245,160,.5); background: rgba(61,245,160,.08); }
 .mini-rechazada { border-color: rgba(240,83,122,.45); opacity: .6; }
 .lista-head .btn-text { white-space: nowrap; flex: 0 0 auto; }
+
+/* ---------- premio flotante ---------- */
+.premio {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px 0 4px;
+}
+.premio img {
+  width: min(210px, 58%);
+  height: auto;
+  display: block;
+  animation: flotar 4.5s ease-in-out infinite;
+  filter: drop-shadow(0 18px 28px rgba(0,0,0,.55));
+}
+.premio-sombra {
+  width: min(120px, 32%);
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.55), transparent 72%);
+  margin-top: 2px;
+  animation: sombra 4.5s ease-in-out infinite;
+}
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-13px); }
+}
+@keyframes sombra {
+  0%, 100% { transform: scaleX(1);    opacity: .75; }
+  50%      { transform: scaleX(.82);  opacity: .45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .premio img, .premio-sombra { animation: none; }
+}
+
+/* ---------- tómbola ---------- */
+.tombola { padding-top: 4px; }
+
+.tb-resumen {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+.tb-resumen p { color: var(--text-dim); font-size: .92rem; }
+.tb-resumen p b { color: var(--text); font-weight: 700; font-size: 1.05rem; }
+.tb-nota {
+  font-size: .8rem !important;
+  color: var(--text-faint) !important;
+  line-height: 1.5;
+  margin-top: 11px;
+  padding-top: 11px;
+  border-top: 1px solid var(--border);
+}
+
+.tb-confirmar {
+  background: var(--surface-2);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--r);
+  padding: 16px;
+}
+.tb-confirmar p { font-size: .88rem; margin-bottom: 13px; }
+
+/* la ruleta girando */
+.tb-ruleta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 132px;
+  padding: 22px 18px;
+  margin-bottom: 16px;
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: var(--r);
+  text-align: center;
+}
+.tb-ruleta-nombre {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  color: var(--accent);
+  line-height: 1.15;
+  animation: latir .5s ease-in-out infinite;
+}
+.tb-ruleta-lbl {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+@keyframes latir {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: .55; transform: scale(.985); }
+}
+
+/* la lista de ganadores */
+.tb-ganadores { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.tb-ganadores li {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 15px;
+  background: var(--surface);
+  border: 1px solid rgba(61,245,160,.28);
+  border-radius: var(--r-sm);
+  animation: entrar .42s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes entrar {
+  from { opacity: 0; transform: translateY(14px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.tb-pos {
+  width: 26px; height: 26px; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.tb-nombre { flex: 1; font-weight: 600; font-size: .95rem; display: flex; flex-direction: column; gap: 2px; }
+.tb-entradas {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .82rem;
+  color: var(--text-faint);
+  flex: 0 0 auto;
+}
+
+.tb-acciones { display: flex; flex-direction: column; gap: 9px; margin-top: 18px; }
+.tb-acciones .btn-sm { width: 100%; }

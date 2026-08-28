@@ -2,6 +2,7 @@ const express = require('express');
 const { soloStaff } = require('../lib/staffAuth');
 const staffSvc = require('../services/staff');
 const misionesSvc = require('../services/misiones');
+const sorteosSvc = require('../services/sorteos');
 
 const router = express.Router();
 
@@ -39,6 +40,18 @@ router.get('/elegibles', wrap(async (_req, res) => {
 
 router.get('/buscar', wrap(async (req, res) => {
   res.json({ resultados: await staffSvc.buscar(req.query.q) });
+}));
+
+/** El resultado guardado, para volver a verlo sin re-sortear. */
+router.get('/sorteo', wrap(async (_req, res) => {
+  res.json(await sorteosSvc.ultimo());
+}));
+
+/** Corre el sorteo. Reemplaza cualquier resultado anterior. */
+router.post('/sorteo', wrap(async (req, res) => {
+  const cantidad = Number(req.body?.cantidad) || 10;
+  const elegibles = await staffSvc.elegibles();
+  res.json(await sorteosSvc.ejecutar(elegibles, cantidad));
 }));
 
 module.exports = router;

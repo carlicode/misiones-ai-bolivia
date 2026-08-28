@@ -53,6 +53,21 @@ async function pedir<T>(ruta: string, clave: string, init?: RequestInit): Promis
   return res.json() as Promise<T>
 }
 
+export interface Ganador {
+  id: string
+  nombre: string
+  celular: string
+  entradas: number
+}
+
+export interface Sorteo {
+  ganadores: Ganador[]
+  semilla: string
+  sorteadoEn: string
+  totalElegibles: number
+  totalEntradas: number
+}
+
 export const staffApi = {
   verificar: (clave: string) => pedir<{ ok: true }>('/verificar', clave),
 
@@ -75,6 +90,14 @@ export const staffApi = {
 
   buscar: (clave: string, q: string) =>
     pedir<{ resultados: ResultadoBusqueda[] }>(`/buscar?q=${encodeURIComponent(q)}`, clave),
+
+  ultimoSorteo: (clave: string) => pedir<Sorteo | null>('/sorteo', clave),
+
+  sortear: (clave: string, cantidad = 10) =>
+    pedir<Sorteo>('/sorteo', clave, {
+      method: 'POST',
+      body: JSON.stringify({ cantidad }),
+    }),
 }
 
 /* La clave vive solo en esta pestaña: cerrarla obliga a volver a escribirla. */

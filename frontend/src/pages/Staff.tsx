@@ -5,9 +5,10 @@ import ClaveGate from '../components/staff/ClaveGate'
 import EvidenciaCard from '../components/staff/EvidenciaCard'
 import Elegibles from '../components/staff/Elegibles'
 import Buscador from '../components/staff/Buscador'
+import Tombola from '../components/staff/Tombola'
 import Toast from '../components/Toast'
 
-type Pestana = 'cola' | 'elegibles' | 'buscar'
+type Pestana = 'cola' | 'elegibles' | 'buscar' | 'sorteo'
 type ToastState = { tipo: 'ok' | 'error'; mensaje: string } | null
 
 export default function Staff() {
@@ -103,6 +104,9 @@ export default function Staff() {
           <button className={pestana === 'buscar' ? 'on' : ''} onClick={() => setPestana('buscar')}>
             Buscar
           </button>
+          <button className={pestana === 'sorteo' ? 'on' : ''} onClick={() => setPestana('sorteo')}>
+            Sorteo
+          </button>
         </nav>
 
         {pestana === 'cola' && (
@@ -126,6 +130,7 @@ export default function Staff() {
 
         {pestana === 'elegibles' && <Elegibles clave={clave} />}
         {pestana === 'buscar' && <Buscador clave={clave} />}
+        {pestana === 'sorteo' && <Tombola clave={clave} />}
       </div>
 
       {toast && <Toast tipo={toast.tipo} mensaje={toast.mensaje} onCerrar={() => setToast(null)} />}
