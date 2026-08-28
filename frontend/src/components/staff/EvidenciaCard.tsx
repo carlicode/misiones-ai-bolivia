@@ -21,6 +21,7 @@ export default function EvidenciaCard({ evidencia, onRevisar, ocupado }: Props) 
   const [motivoLibre, setMotivoLibre] = useState('')
 
   const mision = MISSIONS.find((m) => m.id === evidencia.missionId)
+  const Icono = mision?.icon
   const hora = new Date(evidencia.enviadoEn).toLocaleTimeString('es-BO', {
     hour: '2-digit',
     minute: '2-digit',
@@ -33,7 +34,7 @@ export default function EvidenciaCard({ evidencia, onRevisar, ocupado }: Props) 
         <div className="ev-quien">
           <p className="ev-nombre">{evidencia.nombre}</p>
           <p className="ev-meta">
-            {mision?.emoji} {mision?.title} · {hora}
+            {Icono && <Icono size={13} strokeWidth={2} />} {mision?.title} · {hora}
           </p>
         </div>
         <span className={`pill ${mision?.required ? 'pill-obligatoria' : 'pill-bonus'}`}>

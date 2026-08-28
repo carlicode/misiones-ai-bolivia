@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Camera } from 'lucide-react'
 import type { Mission } from '../lib/missions'
 import type { MisionEnviada, Participante } from '../lib/api'
 import { api } from '../lib/api'
@@ -51,6 +52,7 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
     setPrevia(URL.createObjectURL(f))
   }
 
+  const Icono = mision.icon
   const camposFaltantes = (mision.fields ?? []).filter((f) => !campos[f.key]?.trim())
   const puedeEnviar = Boolean(archivo) && camposFaltantes.length === 0 && !enviando
 
@@ -85,7 +87,7 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
       >
         <div className="sheet-grip" />
         <div className="sheet-head">
-          <span className="emoji" aria-hidden="true">{mision.emoji}</span>
+          <span className="ico" aria-hidden="true"><Icono size={21} strokeWidth={1.9} /></span>
           <h3>{mision.title}</h3>
         </div>
         <p className="sheet-desc">{mision.desc}</p>
@@ -107,10 +109,7 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
               </>
             ) : (
               <span className="vacio">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                  <path d="M4 8a2 2 0 012-2h1.5l1-1.5h7l1 1.5H18a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V8z" stroke="currentColor" strokeWidth="1.6" />
-                  <circle cx="12" cy="13" r="3.4" stroke="currentColor" strokeWidth="1.6" />
-                </svg>
+                <Camera size={28} strokeWidth={1.5} />
                 <span>Toca para tomar o elegir una foto</span>
               </span>
             )}

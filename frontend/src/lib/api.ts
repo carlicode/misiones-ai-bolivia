@@ -1,4 +1,5 @@
 import type { MissionId } from './missions'
+import { conReintentos } from './reintentar'
 
 const BASE = import.meta.env.VITE_API_URL ?? ''
 
@@ -25,10 +26,10 @@ export interface Participante {
 }
 
 async function pedir<T>(ruta: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}${ruta}`, {
+  const res = await conReintentos(() => fetch(`${BASE}${ruta}`, {
     ...init,
     headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) },
-  })
+  }))
   if (!res.ok) {
     const cuerpo = await res.json().catch(() => ({}))
     throw new Error((cuerpo as { error?: string }).error ?? 'No se pudo conectar')
@@ -58,11 +59,11 @@ export const api = {
         body: JSON.stringify({ participanteId, missionId, contentType: archivo.type }),
       }
     )
-    const subida = await fetch(uploadUrl, {
+    const subida = await conReintentos(() => fetch(uploadUrl, {
       method: 'PUT',
       headers: { 'Content-Type': archivo.type },
       body: archivo,
-    })
+    }))
     if (!subida.ok) throw new Error('No se pudo subir la foto. Revisa tu conexión.')
     return key
   },

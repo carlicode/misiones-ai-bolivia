@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Check, Copy } from 'lucide-react'
 import { staffApi, type Elegible } from '../../lib/staffApi'
 
 interface Props {
@@ -44,8 +45,9 @@ export default function Elegibles({ clave }: Props) {
         <p>
           <b>{lista.length}</b> {lista.length === 1 ? 'persona' : 'personas'} · <b>{totalEntradas}</b> entradas en la tómbola
         </p>
-        <button className="btn btn-text" onClick={copiar}>
-          {copiado ? 'Copiado ✓' : 'Copiar lista'}
+        <button className="btn btn-text btn-icono" onClick={copiar}>
+          {copiado ? <Check size={14} strokeWidth={2.4} /> : <Copy size={14} strokeWidth={2} />}
+          {copiado ? 'Copiado' : 'Copiar lista'}
         </button>
       </div>
 

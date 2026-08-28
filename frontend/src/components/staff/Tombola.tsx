@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { Check, Copy } from 'lucide-react'
 import { staffApi, type Elegible, type Ganador, type Sorteo } from '../../lib/staffApi'
 import { PREMIOS } from '../../lib/missions'
 
@@ -74,7 +75,7 @@ export default function Tombola({ clave }: Props) {
   async function copiarGanadores() {
     if (revelados.length === 0) return
     const texto = [
-      `🎉 Ganadores del sorteo · AWS Community Day Bolivia 2026`,
+      'Ganadores del sorteo · AWS Community Day Bolivia 2026',
       '',
       ...revelados.map((g, i) => `${i + 1}. ${g.nombre}`),
       '',
@@ -159,7 +160,8 @@ export default function Tombola({ clave }: Props) {
             <>
               <div className="tb-acciones">
                 <button className="btn btn-primary" onClick={copiarGanadores}>
-                  {copiado ? 'Copiado ✓' : 'Copiar para WhatsApp'}
+                  {copiado ? <Check size={16} strokeWidth={2.4} /> : <Copy size={16} strokeWidth={2} />}
+                  {copiado ? 'Copiado' : 'Copiar para WhatsApp'}
                 </button>
                 <button className="btn btn-ghost btn-sm" onClick={() => { setFase('listo'); setConfirmando(false) }}>
                   Volver a sortear

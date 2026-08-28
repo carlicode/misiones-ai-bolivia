@@ -54,16 +54,19 @@ export default function Buscador({ clave }: Props) {
               </span>
               <span className={`badge-elegible ${r.elegible ? 'si' : 'no'}`} style={{ marginTop: 0 }}>
                 <span className="dot" aria-hidden="true" />
-                {r.elegible ? `${r.entradas} entradas` : `${r.obligatoriasAprobadas}/${REQUIRED_IDS.length}`}
+                {r.elegible
+                  ? `${r.entradas} ${r.entradas === 1 ? 'entrada' : 'entradas'}`
+                  : `${r.obligatoriasAprobadas}/${REQUIRED_IDS.length}`}
               </span>
             </div>
             <div className="res-misiones">
               {MISSIONS.map((m) => {
                 const envio = r.misiones.find((e) => e.missionId === m.id)
                 const estado = envio?.estado ?? 'sin-enviar'
+                const Icono = m.icon
                 return (
                   <span key={m.id} className={`mini mini-${estado}`} title={`${m.title}: ${estado}`}>
-                    {m.emoji}
+                    <Icono size={15} strokeWidth={2} />
                   </span>
                 )
               })}

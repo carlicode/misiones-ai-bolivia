@@ -1,4 +1,5 @@
 import type { MissionId } from './missions'
+import { conReintentos } from './reintentar'
 
 const BASE = import.meta.env.VITE_API_URL ?? ''
 
@@ -38,14 +39,14 @@ export interface ResultadoBusqueda {
 }
 
 async function pedir<T>(ruta: string, clave: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${BASE}/api/staff${ruta}`, {
+  const res = await conReintentos(() => fetch(`${BASE}/api/staff${ruta}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
       'X-Staff-Key': clave,
       ...(init?.headers ?? {}),
     },
-  })
+  }))
   if (!res.ok) {
     const cuerpo = await res.json().catch(() => ({}))
     throw new Error((cuerpo as { error?: string }).error ?? 'No se pudo conectar')

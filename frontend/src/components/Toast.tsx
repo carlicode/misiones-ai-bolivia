@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Check, AlertCircle } from 'lucide-react'
 
 interface Props {
   tipo: 'ok' | 'error'
@@ -14,7 +15,9 @@ export default function Toast({ tipo, mensaje, onCerrar }: Props) {
 
   return (
     <div className={`toast ${tipo}`} role="status">
-      <span aria-hidden="true">{tipo === 'ok' ? '✓' : '!'}</span>
+      <span className="toast-ico" aria-hidden="true">
+        {tipo === 'ok' ? <Check size={16} strokeWidth={2.4} /> : <AlertCircle size={16} strokeWidth={2.2} />}
+      </span>
       <span>{mensaje}</span>
     </div>
   )

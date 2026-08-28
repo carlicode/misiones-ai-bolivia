@@ -1,3 +1,6 @@
+import type { LucideIcon } from 'lucide-react'
+import { ImagePlus, MessageCircle, Users, Mic, GraduationCap, Wrench } from 'lucide-react'
+
 export type MissionId =
   | 'instagram' | 'whatsapp' | 'lider'
   | 'speaker' | 'charla' | 'taller'
@@ -9,7 +12,7 @@ export type ExtraField =
 
 export interface Mission {
   id: MissionId
-  emoji: string
+  icon: LucideIcon
   title: string
   desc: string
   photoLabel: string
@@ -42,7 +45,7 @@ export const TALLERES = [
 export const MISSIONS: Mission[] = [
   {
     id: 'instagram',
-    emoji: '📱',
+    icon: ImagePlus,
     title: 'Publica en Instagram',
     desc: 'Sube una foto del Community Day a tu feed o historia etiquetando a @aws_ai_ug_bolivia.',
     photoLabel: 'Screenshot de tu publicación',
@@ -50,7 +53,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'whatsapp',
-    emoji: '💬',
+    icon: MessageCircle,
     title: 'Únete al grupo y preséntate',
     desc: 'Entra al grupo de WhatsApp de la comunidad y manda un mensaje presentándote.',
     photoLabel: 'Screenshot de tu mensaje en el grupo',
@@ -58,7 +61,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'lider',
-    emoji: '🤳',
+    icon: Users,
     title: 'Selfie con un líder del UG',
     desc: 'Búscanos en el evento y tómate una selfie con cualquier líder del AWS UG AI Bolivia.',
     photoLabel: 'Tu selfie con el líder',
@@ -66,7 +69,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'speaker',
-    emoji: '📸',
+    icon: Mic,
     title: 'Foto con un speaker de AI',
     desc: 'Tómate una foto con cualquier speaker de una charla de inteligencia artificial.',
     photoLabel: 'Tu foto con el speaker',
@@ -77,7 +80,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'charla',
-    emoji: '🎓',
+    icon: GraduationCap,
     title: 'Asiste a una charla de AI',
     desc: 'Entra a una charla de AI y cuéntanos en una frase qué te llevas de ella.',
     photoLabel: 'Foto dentro de la sala',
@@ -89,7 +92,7 @@ export const MISSIONS: Mission[] = [
   },
   {
     id: 'taller',
-    emoji: '🛠️',
+    icon: Wrench,
     title: 'Completa un taller',
     desc: 'Participa en uno de los talleres de AI y muéstranos el resultado en tu pantalla.',
     photoLabel: 'Foto de tu pantalla con el resultado',
