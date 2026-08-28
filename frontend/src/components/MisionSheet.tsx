@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Mission } from '../lib/missions'
 import type { MisionEnviada, Participante } from '../lib/api'
 import { api } from '../lib/api'
+import { comprimirImagen } from '../lib/comprimir'
 
 interface Props {
   mision: Mission
@@ -60,7 +61,9 @@ export default function MisionSheet({ mision, participanteId, envio, onClose, on
     setError(null)
     setEnviando(true)
     try {
-      const key = await api.subirFoto(participanteId, mision.id, archivo)
+      // Baja el peso antes de salir a la red: en el evento los datos van lentos.
+      const liviana = await comprimirImagen(archivo)
+      const key = await api.subirFoto(participanteId, mision.id, liviana)
       const participante = await api.enviarMision(participanteId, mision.id, key, campos)
       onEnviado(participante)
       onClose()

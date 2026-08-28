@@ -182,9 +182,22 @@ nombre o celular y muestra el estado de cada una de sus misiones.
 
 ---
 
+## Detalles pensados para el día del evento
+
+- **Las fotos se comprimen en el celular antes de subir.** Una foto de iPhone
+  de 5 MB sale como 750 KB a 1600 px, que sobra para revisar una evidencia.
+  Con los datos móviles saturados de un evento, esa es la diferencia entre que
+  la subida termine o se corte. Si la imagen ya es chica, se deja intacta.
+- **Se instala como app.** Manifest, íconos y `standalone`: quien la agrega a
+  su pantalla de inicio la abre sin barra del navegador.
+- **Confeti al completar las 3 obligatorias** — el momento que vale la pena
+  celebrar es cuando entras al sorteo. Son 40 líneas de canvas en vez de una
+  librería de 30 KB.
+- **Contador regresivo** fijo arriba, y contador social abajo (*«N
+  participando»*) para que se note que la gente está entrando.
+
 ## Pendiente
 
-- [ ] Foto del premio en `frontend/public/premio-3d.png`
 - [ ] Fecha y hora reales del evento en `DEADLINE`
       ([`frontend/src/lib/missions.ts`](frontend/src/lib/missions.ts)) — hoy
       tiene un valor de marcador para el contador regresivo

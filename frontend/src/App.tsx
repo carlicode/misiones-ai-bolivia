@@ -9,6 +9,7 @@ import MisionSheet from './components/MisionSheet'
 import Lineamientos from './components/Lineamientos'
 import Contador from './components/Contador'
 import Premio from './components/Premio'
+import Confeti from './components/Confeti'
 import Toast from './components/Toast'
 
 type ToastState = { tipo: 'ok' | 'error'; mensaje: string } | null
@@ -19,6 +20,7 @@ export default function App() {
   const [misionAbierta, setMisionAbierta] = useState<MissionId | null>(null)
   const [toast, setToast] = useState<ToastState>(null)
   const [stats, setStats] = useState<{ participantes: number } | null>(null)
+  const [confeti, setConfeti] = useState(false)
 
   useEffect(() => {
     const id = leerId()
@@ -46,6 +48,8 @@ export default function App() {
   function alEnviarMision(p: Participante) {
     const yaEraElegible = participante?.elegible
     setParticipante(p)
+    // El momento que vale la pena celebrar: acaba de entrar al sorteo.
+    if (!yaEraElegible && p.elegible) setConfeti(true)
     setToast({
       tipo: 'ok',
       mensaje: !yaEraElegible && p.elegible
@@ -160,6 +164,7 @@ export default function App() {
         />
       )}
 
+      {confeti && <Confeti onFin={() => setConfeti(false)} />}
       {toast && <Toast tipo={toast.tipo} mensaje={toast.mensaje} onCerrar={() => setToast(null)} />}
     </>
   )
