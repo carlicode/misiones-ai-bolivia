@@ -15,11 +15,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Misiones AI" />
 
-    <!-- Se comparte mucho por WhatsApp: la tarjeta importa -->
+    <!-- Se comparte mucho por WhatsApp: la tarjeta importa.
+         La URL de la imagen tiene que ser absoluta: los scrapers de
+         WhatsApp y LinkedIn no resuelven rutas relativas. -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://d1jd2g07edoeyf.cloudfront.net/" />
     <meta property="og:title" content="Misiones AI Bolivia" />
     <meta property="og:description" content="Cumple 3 misiones en el Community Day y entra al sorteo de 10 impresiones 3D." />
-    <meta property="og:image" content="/premio-3d.jpg" />
+    <meta property="og:image" content="https://d1jd2g07edoeyf.cloudfront.net/social.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

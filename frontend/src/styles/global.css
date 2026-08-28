@@ -559,106 +559,59 @@ h1, h2, h3 { text-wrap: balance; letter-spacing: -.02em; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 6px 0 10px;
+  margin: 10px 0 14px;
 }
 
-/* La foto viene con fondo negro de estudio, no recortada. En vez de pelearse
-   con el recorte, se enmarca como foto de producto: asi el fondo se lee
-   intencional y no como un pegote. */
-.premio-pieza {
-  position: relative;
-  width: min(230px, 62%);
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid var(--border-hi);
-  background: #000;
-  animation: flotar 4.8s ease-in-out infinite;
-  box-shadow:
-    0 22px 40px -18px rgba(0,0,0,.9),
-    0 0 44px -22px rgba(139,92,246,.55);
+/* La base de la pieza es negra y el fondo tambien: sin este halo la placa
+   se pierde contra la pagina. Ademas ata el hero al morado de la marca. */
+.premio-halo {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78%;
+  height: 82%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(139,92,246,.26) 0%,
+    rgba(139,92,246,.10) 42%,
+    transparent 72%
+  );
+  filter: blur(14px);
+  pointer-events: none;
 }
-.premio-pieza img {
-  width: 100%;
+
+.premio img {
+  position: relative;
+  width: min(228px, 62%);
   height: auto;
   display: block;
-}
-
-/* Etiqueta encima de la foto, para que se lea como el premio y no como adorno */
-.premio-tag {
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 9.5px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text);
-  background: rgba(10,11,15,.72);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255,255,255,.14);
-  padding: 5px 9px;
-  border-radius: 999px;
+  animation: flotar 4.8s ease-in-out infinite;
+  filter: drop-shadow(0 16px 22px rgba(0,0,0,.7));
 }
 
 .premio-sombra {
-  width: min(140px, 38%);
-  height: 12px;
+  width: min(118px, 32%);
+  height: 11px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(0,0,0,.75), transparent 72%);
-  margin-top: 10px;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,.85), transparent 72%);
+  margin-top: 4px;
   animation: sombra 4.8s ease-in-out infinite;
 }
 
 @keyframes flotar {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-11px); }
+  50%      { transform: translateY(-12px); }
 }
 @keyframes sombra {
   0%, 100% { transform: scaleX(1);   opacity: .7; }
-  50%      { transform: scaleX(.84); opacity: .4; }
+  50%      { transform: scaleX(.82); opacity: .38; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .premio-pieza, .premio-sombra { animation: none; }
+  .premio img, .premio-sombra { animation: none; }
 }
-
-/* ---------- confeti ---------- */
-.confeti {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 90;
-}
-
-/* ---------- íconos (lucide) ---------- */
-.mision .ico, .sheet-head .ico {
-  color: var(--text-dim);
-}
-.mision.aprobada .ico { color: var(--accent); }
-.mision.rechazada .ico { color: var(--danger); }
-.sheet-head .ico { color: var(--accent); }
-
-/* El ícono debe ir en la misma línea que el texto, no encima */
-.ev-meta {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ev-meta svg { flex: 0 0 auto; color: var(--text-faint); }
-
-.mini svg { color: var(--text-dim); }
-.mini-aprobada svg { color: var(--accent); }
-.mini-pendiente svg { color: var(--warn); }
-.mini-rechazada svg { color: var(--danger); }
-
-.toast-ico { flex: 0 0 auto; display: flex; padding-top: 1px; }
-.toast.ok .toast-ico { color: var(--accent); }
-.toast.error .toast-ico { color: var(--danger); }
-
-.foto-picker .vacio svg { color: var(--text-faint); }
-.btn-icono { display: inline-flex; align-items: center; gap: 6px; }
 
 /* ---------- participación cerrada ---------- */
 .aviso-cerrado {

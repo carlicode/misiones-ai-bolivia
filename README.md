@@ -172,7 +172,9 @@ frontend/
   src/lib/missions.ts         textos de las misiones y la agenda de charlas
   src/components/             app del participante
   src/components/staff/       panel de moderación y tómbola
-  public/premio-3d.jpg        foto del premio (flota en el hero)
+  public/premio-3d.png        el premio recortado, flota en el hero
+  public/social.jpg           vista previa al compartir por WhatsApp
+  public/aws/                 iconos oficiales de los servicios de AWS
 ```
 
 ---
