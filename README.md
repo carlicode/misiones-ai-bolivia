@@ -132,7 +132,7 @@ frontend/
   src/lib/missions.ts         textos de las misiones y la agenda de charlas
   src/components/             app del participante
   src/components/staff/       panel de moderación y tómbola
-  public/premio-3d.png        foto del premio (flota en el hero)
+  public/premio-3d.jpg        foto del premio (flota en el hero)
 ```
 
 ---
