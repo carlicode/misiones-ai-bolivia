@@ -1,0 +1,246 @@
+<meta charset="utf-8">
+<title>Galería Community Day</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="__TOTAL__ fotos del AWS Community Day Bolivia 2026, compartidas por la comunidad AWS AI UG Bolivia.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Así se vivió el Community Day">
+<meta property="og:description" content="__TOTAL__ fotos compartidas por la comunidad AWS AI UG Bolivia.">
+<meta property="og:image" content="https://d1jd2g07edoeyf.cloudfront.net/galeria/social.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+/* Misma paleta que la app de misiones: la galeria es su continuacion. */
+:root{
+  --bg:#0A0B0F;
+  --panel:#12141B;
+  --panel-2:#181B23;
+  --line:#23262E;
+  --line-hi:#33373F;
+
+  --mint:#3DF5A0;
+  --violet:#8B5CF6;
+
+  --text:#F3F4F6;
+  --dim:#979BA6;
+  --faint:#5B5F6B;
+
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sans:'Space Grotesk',system-ui,-apple-system,sans-serif;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html{background:var(--bg)}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(55% 32% at 18% -6%,rgba(61,245,160,.10),transparent 70%),
+    radial-gradient(45% 30% at 88% 6%,rgba(139,92,246,.10),transparent 70%);
+}
+
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 22px 90px}
+
+/* ── hero ── */
+header{padding:52px 0 30px;text-align:center}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--mint);
+  margin-bottom:18px;
+}
+h1{
+  font-size:clamp(2.1rem,6vw,3.2rem);font-weight:700;letter-spacing:-.035em;
+  line-height:1.06;text-wrap:balance;margin-bottom:14px;
+}
+h1 em{
+  font-style:normal;
+  background:linear-gradient(100deg,var(--mint),var(--violet));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.lede{color:var(--dim);max-width:52ch;margin:0 auto;text-wrap:pretty;font-size:1.02rem}
+.lede b{color:var(--text)}
+
+/* ── filtros ── */
+nav{
+  position:sticky;top:0;z-index:40;
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  padding:18px 0;margin:8px -22px 26px;
+  background:rgba(10,11,15,.82);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 15px;border-radius:999px;
+  border:1px solid var(--line-hi);background:var(--panel);
+  color:var(--dim);font-size:.86rem;font-weight:500;
+  transition:border-color .15s,color .15s,background .15s;
+  cursor:pointer;font-family:inherit;
+}
+.chip span{font-family:var(--mono);font-size:.74rem;color:var(--faint)}
+.chip:hover{color:var(--text);border-color:var(--mint)}
+.chip.on{background:rgba(61,245,160,.09);border-color:var(--mint);color:var(--mint)}
+.chip.on span{color:var(--mint)}
+
+/* ── grilla ── */
+.grilla{columns:2 240px;column-gap:12px}
+@media(min-width:640px){.grilla{columns:3 240px}}
+@media(min-width:960px){.grilla{columns:4 240px}}
+
+.foto{
+  break-inside:avoid;margin-bottom:12px;
+  border-radius:14px;overflow:hidden;
+  border:1px solid var(--line);background:var(--panel-2);
+  cursor:zoom-in;position:relative;
+  transition:border-color .18s ease,transform .18s ease;
+  aspect-ratio:1/1;
+}
+.foto:hover{border-color:var(--mint);transform:translateY(-2px)}
+.foto img{width:100%;height:100%;display:block;object-fit:cover}
+.foto figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:22px 12px 10px;
+  background:linear-gradient(180deg,transparent,rgba(6,7,10,.88));
+  font-size:.76rem;font-weight:500;color:var(--text);
+  opacity:0;transition:opacity .18s ease;
+}
+.foto:hover figcaption{opacity:1}
+
+/* ── lightbox ── */
+.lightbox{
+  position:fixed;inset:0;z-index:80;
+  background:rgba(4,5,8,.92);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:26px;
+}
+.lightbox[hidden]{display:none}
+.lightbox .marco{position:relative;max-width:min(880px,92vw);max-height:80vh}
+.lightbox img{
+  max-width:min(880px,92vw);max-height:80vh;object-fit:contain;
+  border-radius:12px;border:1px solid var(--line-hi);display:block;
+}
+.lightbox figcaption{
+  position:absolute;bottom:26px;left:0;right:0;text-align:center;
+  font-size:.86rem;color:var(--dim);font-family:var(--mono);
+}
+.lb-cerrar,.lb-prev,.lb-next{
+  position:absolute;
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line-hi);color:var(--text);
+  cursor:pointer;transition:border-color .15s;font-size:18px;
+}
+.lb-cerrar:hover,.lb-prev:hover,.lb-next:hover{border-color:var(--mint)}
+.lb-cerrar{top:20px;right:20px}
+.lb-prev{left:20px;top:50%;transform:translateY(-50%)}
+.lb-next{right:20px;top:50%;transform:translateY(-50%)}
+@media(max-width:640px){.lb-prev,.lb-next{width:36px;height:36px}}
+
+.pie{
+  margin-top:56px;padding-top:20px;border-top:1px solid var(--line);
+  text-align:center;color:var(--faint);font-size:.8rem;line-height:1.7;
+}
+.pie a{color:var(--mint);text-decoration:none}
+
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">AWS AI UG Bolivia · Community Day · 29 ago 2026</p>
+    <h1>Así se vivió el <em>Community Day</em></h1>
+    <p class="lede">
+      <b>__TOTAL__ fotos</b> que la comunidad compartió durante las misiones
+      del sorteo: selfies con los líderes, con los speakers y dentro de las
+      charlas de AI.
+    </p>
+  </header>
+
+  <nav id="filtros">
+    <button class="chip on" data-mision="todas">Todas <span>__TOTAL__</span></button>
+    __FILTROS__
+  </nav>
+
+  <main class="grilla" id="grilla">
+__TARJETAS__
+  </main>
+
+  <p class="pie">
+    Comunidad <a href="https://www.instagram.com/aws_ai_ug_bolivia/" target="_blank" rel="noreferrer">AWS AI UG Bolivia</a>
+    — fotos enviadas por sus propios protagonistas como parte del sorteo del Community Day 2026.
+  </p>
+</div>
+
+<div class="lightbox" id="lightbox" hidden>
+  <div class="marco">
+    <button class="lb-cerrar" id="lbCerrar" aria-label="Cerrar">✕</button>
+    <button class="lb-prev" id="lbPrev" aria-label="Anterior">‹</button>
+    <img id="lbImg" src="" alt="">
+    <figcaption id="lbCap"></figcaption>
+    <button class="lb-next" id="lbNext" aria-label="Siguiente">›</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  var grilla = document.getElementById('grilla');
+  var fotos = [].slice.call(grilla.querySelectorAll('.foto'));
+  var chips = [].slice.call(document.querySelectorAll('.chip'));
+
+  chips.forEach(function(chip){
+    chip.addEventListener('click', function(){
+      chips.forEach(function(c){ c.classList.remove('on') });
+      chip.classList.add('on');
+      var mision = chip.getAttribute('data-mision');
+      fotos.forEach(function(f){
+        f.style.display = (mision === 'todas' || f.getAttribute('data-mision') === mision) ? '' : 'none';
+      });
+    });
+  });
+
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
+  var lbCap = document.getElementById('lbCap');
+  var visibles = function(){ return fotos.filter(function(f){ return f.style.display !== 'none' }) };
+  var indice = 0;
+
+  function abrir(i){
+    var lista = visibles();
+    if (!lista.length) return;
+    indice = (i + lista.length) % lista.length;
+    var f = lista[indice];
+    var img = f.querySelector('img');
+    lbImg.src = img.getAttribute('data-full');
+    lbCap.textContent = f.querySelector('figcaption').textContent;
+    lb.hidden = false;
+  }
+  function cerrar(){ lb.hidden = true; lbImg.src = ''; }
+
+  fotos.forEach(function(f){
+    f.addEventListener('click', function(){ abrir(visibles().indexOf(f)); });
+  });
+
+  document.getElementById('lbCerrar').addEventListener('click', cerrar);
+  document.getElementById('lbPrev').addEventListener('click', function(){ abrir(indice - 1) });
+  document.getElementById('lbNext').addEventListener('click', function(){ abrir(indice + 1) });
+  lb.addEventListener('click', function(e){ if (e.target === lb) cerrar() });
+  document.addEventListener('keydown', function(e){
+    if (lb.hidden) return;
+    if (e.key === 'Escape') cerrar();
+    if (e.key === 'ArrowLeft') abrir(indice - 1);
+    if (e.key === 'ArrowRight') abrir(indice + 1);
+  });
+})();
+</script>

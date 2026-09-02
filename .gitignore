@@ -5,3 +5,7 @@ dist/
 .serverless/
 .DS_Store
 *.log
+
+# Fotos de participantes generadas por scripts/generar-galeria.mjs.
+# Contienen caras identificables: se suben a S3, nunca al repo.
+/galeria-salida/

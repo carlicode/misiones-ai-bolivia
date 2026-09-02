@@ -95,6 +95,7 @@ debajo de la lista de ganadores.
 | **App** | https://d1jd2g07edoeyf.cloudfront.net |
 | **Panel del staff** | https://d1jd2g07edoeyf.cloudfront.net/staff |
 | **API** | https://90jz4igs4d.execute-api.us-east-1.amazonaws.com |
+| **Galería pública** | https://d1jd2g07edoeyf.cloudfront.net/galeria/ |
 
 El cartel con el QR para el stand está en [`cartel/qr-stand.svg`](cartel/qr-stand.svg)
 (A5, listo para imprimir). Para regenerarlo con otra URL:
@@ -102,6 +103,38 @@ El cartel con el QR para el stand está en [`cartel/qr-stand.svg`](cartel/qr-sta
 ```bash
 node scripts/generar-qr.mjs https://la-url-que-sea
 ```
+
+---
+
+## Galería pública
+
+Después del evento, `scripts/generar-galeria.mjs` arma una página con las
+fotos aprobadas y las publica en el mismo hosting que la app:
+
+```bash
+BUCKET_FOTOS=ugai-fotos-prod-<cuenta> npm run galeria
+```
+
+**Solo entran selfies con líderes, fotos con speakers y fotos de charlas** —
+Instagram y WhatsApp quedan afuera a propósito. Una captura del grupo de
+WhatsApp muestra nombres y números de gente que nunca participó del sorteo,
+y eso no es publicable sin su consentimiento.
+
+Cada foto se reencoda al bajarla, lo que de paso quita los EXIF (pueden traer
+ubicación GPS). La portada para compartir por WhatsApp es un mosaico de seis
+fotos, no una persona sola: la vista previa del link es lo primero que ve
+todo el mundo, y ahí una selfie individual tiene mucha más exposición que
+ser una miniatura entre otras 39.
+
+El script deja todo en `galeria-salida/` (fuera del repo — son caras
+identificables, no van a Git) y al final imprime los comandos de `aws s3
+sync` y `cloudfront create-invalidation` para publicarla.
+
+> **Nota técnica:** `CustomErrorResponses` hace que `/staff` funcione como
+> ruta de React Router, pero eso solo no basta para que `/galeria/` sirva su
+> propio `index.html` — sin arreglo, cae al de la raíz. `infra/hosting.yml`
+> tiene una CloudFront Function que reescribe cualquier URL terminada en
+> `/` a su `index.html`, así que una carpeta nueva funciona sola.
 
 ---
 

@@ -44,6 +44,30 @@ Resources:
               StringEquals:
                 AWS:SourceArn: !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${Distribucion}'
 
+  # DefaultRootObject solo expande "/" -> "/index.html". Una carpeta como
+  # /galeria/ no lo hereda: S3 no tiene un objeto llamado "galeria/", asi
+  # que sin esto CloudFront cae al error 403 y ese error termina sirviendo
+  # el index.html de la RAIZ (por el CustomErrorResponses de mas abajo,
+  # necesario para que /staff funcione como ruta de React Router). Esta
+  # funcion corrige eso antes de que la peticion llegue a S3: cualquier URL
+  # terminada en "/" pide su propio index.html, no el de la raiz.
+  FuncionIndice:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub 'ugai-indice-carpetas-${Stage}'
+      FunctionConfig:
+        Comment: Reescribe /carpeta/ a /carpeta/index.html
+        Runtime: cloudfront-js-2.0
+      AutoPublish: true
+      FunctionCode: |
+        function handler(event) {
+          var request = event.request;
+          if (request.uri.endsWith('/')) {
+            request.uri += 'index.html';
+          }
+          return request;
+        }
+
   Distribucion:
     Type: AWS::CloudFront::Distribution
     Properties:
@@ -65,6 +89,9 @@ Resources:
           Compress: true
           # Politica administrada CachingOptimized
           CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt FuncionIndice.FunctionARN
         CustomErrorResponses:
           # La app es una SPA: /staff no existe como archivo en S3, asi que
           # las rutas del router tienen que caer en index.html.

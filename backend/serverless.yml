@@ -143,12 +143,9 @@ resources:
               AllowedMethods: [PUT, GET]
               AllowedHeaders: ['*']
               MaxAge: 3000
-        LifecycleConfiguration:
-          Rules:
-            # Las evidencias no sirven despues del evento.
-            - Id: borrar-a-los-90-dias
-              Status: Enabled
-              ExpirationInDays: 90
+        # Sin regla de expiracion: las evidencias del Community Day 2026 se
+        # conservan por decision del equipo. Si se agrega una regla aqui,
+        # volveria a borrarlas en el proximo deploy.
 
   Outputs:
     ApiUrl:
